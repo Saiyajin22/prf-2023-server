@@ -1,4 +1,4 @@
-export const carBodyStyles = [
+const carBodyStyles = [
   "sedan",
   "micro",
   "hatchback",

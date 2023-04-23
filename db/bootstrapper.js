@@ -47,7 +47,7 @@ async function ensureCarsExist() {
           dateOfManufacturing: new Date(2003, 5, 22)
         })
       ];
-      await cars.save();
+      await Car.insertMany(cars);
       console.log('Cars saved successfully!');
     }
   } catch (error) {
