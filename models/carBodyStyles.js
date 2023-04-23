@@ -1,0 +1,22 @@
+export const carBodyStyles = [
+  "sedan",
+  "micro",
+  "hatchback",
+  "univsersal",
+  "liftback",
+  "coupe",
+  "cabriolet",
+  "roadster",
+  "targa",
+  "limousine",
+  "muscle car",
+  "sport car",
+  "super car",
+  "suv",
+  "crossover",
+  "pickup",
+  "van",
+  "minivan",
+  "minibus",
+  "campervan"
+];
