@@ -2,69 +2,54 @@ const express = require('express')
 const router = express.Router();
 const mongoose = require('mongoose');
 const User = mongoose.model('user');
-
 const passport = require('passport');
 
 router.route('/login').post((req, res, next) => {
   if (req.body.username, req.body.password) {
-    // Felhasználónév és jelszó ellenőrzése
-    passport.authenticate('local', function (error, user) { //meghívjuk a local nevű stratégiát
+    passport.authenticate('local', function (error, user) {
       if (error) return res.status(500).send(error);
-      // Hibakezelés
       req.login(user, function (error) {
         if (error) return res.status(500).send(error);
-        return res.status(200).send('Bejelentkezes sikeres');
+        return res.status(200).send('Successfully logged in!');
       })
-    })(req, res); //a stratégiának átadjuk paraméterként a req, res objektumokat
+    })(req, res);
   } else {
-    // Hibakezelés, ha hiányzik a felhasználónév vagy a jelszó
     return res.status(400).send('Hibas keres, username es password kell');
   }
 });
 
 router.route('/logout').post((req, res, next) => {
-  if (req.isAuthenticated()) { //Ha sikerült sessionbe beléptetni a usert, ez mindig ellenőrzi, hogy bejelentkezett-e vagy sem
+  if (req.isAuthenticated()) {
     req.logout();
-    // Sikeres kijelentkezés
-    return res.status(200).send('Kijelentkezes sikeres');
+    return res.status(200).send('Successfully logged out!');
   } else {
-    // Hiba, ha nem volt bejelentkezve
-    return res.status(403).send('Nem is volt bejelentkezve');
+    return res.status(403).send('User is not logged in!');
   }
 })
 
 router.route('/status').get((req, res, next) => {
   if (req.isAuthenticated()) {
-    // Felhasználói státusz lekérése
     console.log(req.user)
     return res.status(200).send(req.user);
   } else {
-    // Hiba, ha nem volt bejelentkezve
-    return res.status(403).send('Nem is volt bejelentkezve');
+    return res.status(403).send('User is not logged in!');
   }
 })
 
-
-// #2 a users fájl tartalmát kicsit átírtam
-
-// Middleware a felhasználók lekérdezése előtt az id alapján - nem minden route-ra kell meghívnunk
-// NodeJS-ben async jelöli az aszinkron műveleteket, amelyeknek a lefutási ideje nem determinisztikus, és
-// az await várakozási parancsot akarjuk bennük használni
 async function getUser(req, res, next) {
   try {
     user = await User.findById(req.params.id);
     if (user == null) {
-      return res.status(404).json({ message: 'A felhasználó nem található' });
+      return res.status(404).json({ message: 'There is no user with the given id' });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 
-  res.user = user; // ettől kezdve a response-ban benne van a db-ből lekért user objektum
+  res.user = user;
   next();
 }
 
-// GET /users - összes felhasználó lekérdezése
 router.get('/', async (req, res) => {
   try {
     const users = await User.find();
@@ -74,13 +59,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /users/:id - egy felhasználó lekérdezése az id alapján
-router.get('/:id', getUser, (req, res) => { //ez is egy middleware használati módszer, 
-  // a getUser middleware ilyenkor le fog futni a kérés feldolgozása előtt 
-  res.json(res.user); //egyszerűsített válaszküldés, a megadott objektumot json-re konvertálva küldjük el
+router.get('/:id', getUser, (req, res) => {
+  res.json(res.user);
 });
 
-// POST /users - új felhasználó létrehozása
 router.post('/', async (req, res) => {
   const user = new User({
     username: req.body.username,
@@ -97,7 +79,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PATCH /users/:id - egy felhasználó frissítése az id alapján
 router.patch('/:id', getUser, async (req, res) => {
   if (req.body.username != null) {
     res.user.username = req.body.username;
@@ -120,16 +101,13 @@ router.patch('/:id', getUser, async (req, res) => {
   }
 });
 
-// DELETE /users/:id - egy felhasználó törlése az id alapján
 router.delete('/:id', getUser, async (req, res) => {
   try {
     await res.user.remove();
-    res.json({ message: 'A felhasználó sikeresen törölve!' });
+    res.json({ message: 'User successfully deleted!' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-/* Ha egy fájl require-el behivatkozza ezt a fájlt, akkor a hivatkozás helyére a module.exports-ban megadott objektum, funkció 
-vagy változó fog bekerülni */
 module.exports = router

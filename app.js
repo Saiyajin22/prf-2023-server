@@ -20,6 +20,7 @@ db.once("open", function () {
 });
 
 const User = require("./db/userSchema");
+const Car = require("./db/carSchema");
 require("./db/bootstrapper")();
 
 app.use(bodyParser.json());
@@ -62,7 +63,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/users", require("./controllers/userController"));
+app.use("/users", require("./controllers/userController"));
+app.use("/cars", require("./controllers/carController"));
 app.use("", express.static("../client"));
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");

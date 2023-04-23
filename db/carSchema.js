@@ -22,7 +22,7 @@ const carSchema = new mongoose.Schema({
 
 carSchema.pre('save', function(next) {
   const car = this;
-  if(!carBodyStyles.includes(car.bodyStyle)){
+  if(!carBodyStyles.includes(car.bodyStyle.toLowerCase())){
     console.log("The given body style is not valid for a car!");
     return next(error);
   }
