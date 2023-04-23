@@ -4,14 +4,23 @@ const mongoose = require("mongoose");
 const Car = mongoose.model("car");
 
 router.get("/", async (req, res) => {
-  try {
-    const cars = await Car.find();
-    console.log("Cars from db: ", cars);
-    res.status(200).json(cars);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+    try {
+      const cars = await Car.find();
+      console.log("Cars from db: ", cars);
+      const carsWithId = cars.map(car => {
+        return {
+          id: car._id.toString(),
+          brand: car.brand,
+          series: car.series,
+          bodyStyle: car.bodyStyle,
+          dateOfManufacturing: car.dateOfManufacturing
+        };
+      });
+      res.status(200).json(carsWithId);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
 
 router.get("/:id", async (req, res) => {
   try {
