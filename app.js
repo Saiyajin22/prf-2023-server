@@ -5,9 +5,15 @@ const localStrategy = require("passport-local").Strategy;
 const expressSession = require("express-session");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const cors = require('cors');
+const cors = require("cors");
 
 const app = express();
+
+const corsOptions = {
+  origin: "http://localhost:4200",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 mongoose.connect("mongodb://localhost:27017/prf_projekt_toth_zoltan", {
   useNewUrlParser: true,
@@ -63,10 +69,6 @@ app.use((req, res, next) => {
   console.log("A middleware futott!");
   next();
 });
-
-app.use(cors({
-  origin: 'http://localhost:4200'
-}));
 
 app.use("/users", require("./controllers/userController"));
 app.use("/cars", require("./controllers/carController"));
