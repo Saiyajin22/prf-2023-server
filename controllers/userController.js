@@ -5,21 +5,20 @@ const User = mongoose.model("user");
 const passport = require("passport");
 
 router.route("/login").post((req, res, next) => {
-  console.log("BODY: ", req.body);
   if ((req.body.username, req.body.password)) {
     passport.authenticate("local", function (error, user) {
       if (error)
-        return res.status(500).send("Login failed due to an unexpected error");
+        return res.status(500).json("Login failed due to an unexpected error");
       req.login(user, function (error) {
         if (error)
           return res
             .status(500)
-            .send("Login failed due to an unexpected error");
-        return res.status(200).send("Successfully logged in!");
+            .json("Login failed due to an unexpected error");
+        return res.status(200).json("Successfully logged in!");
       });
     })(req, res);
   } else {
-    return res.status(400).send("Username and password were not provided!");
+    return res.status(400).json("Username and password were not provided!");
   }
 });
 
