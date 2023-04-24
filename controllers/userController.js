@@ -45,7 +45,7 @@ router.route("/authenticated").get((req, res, next) => {
   if (req.isAuthenticated()) {
     return res.status(200).send(true);
   } else {
-    return res.status(200).send(false);
+    return res.status(403).send(false);
   }
 });
 

@@ -6,7 +6,6 @@ const Car = mongoose.model("car");
 router.get("/", async (req, res) => {
     try {
       const cars = await Car.find();
-      console.log("Cars from db: ", cars);
       const carsWithId = cars.map(car => {
         return {
           id: car._id.toString(),
