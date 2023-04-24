@@ -5,6 +5,7 @@ const localStrategy = require("passport-local").Strategy;
 const expressSession = require("express-session");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const cors = require('cors');
 
 const app = express();
 
@@ -62,6 +63,10 @@ app.use((req, res, next) => {
   console.log("A middleware futott!");
   next();
 });
+
+app.use(cors({
+  origin: 'http://localhost:4200'
+}));
 
 app.use("/users", require("./controllers/userController"));
 app.use("/cars", require("./controllers/carController"));

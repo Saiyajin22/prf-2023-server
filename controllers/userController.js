@@ -1,46 +1,62 @@
-const express = require('express')
+const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose');
-const User = mongoose.model('user');
-const passport = require('passport');
+const mongoose = require("mongoose");
+const User = mongoose.model("user");
+const passport = require("passport");
 
-router.route('/login').post((req, res, next) => {
-  if (req.body.username, req.body.password) {
-    passport.authenticate('local', function (error, user) {
-      if (error) return res.status(500).send(error);
+router.route("/login").post((req, res, next) => {
+  console.log("BODY: ", req.body);
+  if ((req.body.username, req.body.password)) {
+    passport.authenticate("local", function (error, user) {
+      if (error)
+        return res.status(500).send("Login failed due to an unexpected error");
       req.login(user, function (error) {
-        if (error) return res.status(500).send(error);
-        return res.status(200).send('Successfully logged in!');
-      })
+        if (error)
+          return res
+            .status(500)
+            .send("Login failed due to an unexpected error");
+        return res.status(200).send("Successfully logged in!");
+      });
     })(req, res);
   } else {
-    return res.status(400).send('Hibas keres, username es password kell');
+    return res.status(400).send("Username and password were not provided!");
   }
 });
 
-router.route('/logout').post((req, res, next) => {
+router.route("/logout").post((req, res, next) => {
   if (req.isAuthenticated()) {
     req.logout();
-    return res.status(200).send('Successfully logged out!');
+    return res.status(200).send("Successfully logged out!");
   } else {
-    return res.status(403).send('User is not logged in!');
+    return res.status(403).send("User is not logged in!");
   }
-})
+});
 
-router.route('/status').get((req, res, next) => {
+router.route("/status").get((req, res, next) => {
   if (req.isAuthenticated()) {
-    console.log(req.user)
+    console.log(req.user);
     return res.status(200).send(req.user);
   } else {
-    return res.status(403).send('User is not logged in!');
+    return res.status(403).send("User is not logged in!");
   }
-})
+});
+
+router.route("/authenticated").get((req, res, next) => {
+  console.log("/authenticated endpoint called");
+  if (req.isAuthenticated()) {
+    return res.status(200).send(true);
+  } else {
+    return res.status(200).send(false);
+  }
+});
 
 async function getUser(req, res, next) {
   try {
     user = await User.findById(req.params.id);
     if (user == null) {
-      return res.status(404).json({ message: 'There is no user with the given id' });
+      return res
+        .status(404)
+        .json({ message: "There is no user with the given id" });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -50,7 +66,7 @@ async function getUser(req, res, next) {
   next();
 }
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
@@ -59,11 +75,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', getUser, (req, res) => {
+router.get("/:id", getUser, (req, res) => {
   res.json(res.user);
 });
 
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   const user = new User({
     username: req.body.username,
     password: req.body.password,
@@ -79,7 +95,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.patch('/:id', getUser, async (req, res) => {
+router.patch("/:id", getUser, async (req, res) => {
   if (req.body.username != null) {
     res.user.username = req.body.username;
   }
@@ -101,13 +117,13 @@ router.patch('/:id', getUser, async (req, res) => {
   }
 });
 
-router.delete('/:id', getUser, async (req, res) => {
+router.delete("/:id", getUser, async (req, res) => {
   try {
     await res.user.remove();
-    res.json({ message: 'User successfully deleted!' });
+    res.json({ message: "User successfully deleted!" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-module.exports = router
+module.exports = router;
