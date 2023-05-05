@@ -34,7 +34,7 @@ const bicycleSchema = new mongoose.Schema({
 bicycleSchema.pre('save', function(next) {
   const bicycle = this;
   if(bicycle.price > 500000){
-    console.log("The most expensive bicycle costs 500.000$. Please lowert your price");
+    console.log("The most expensive bicycle costs 500.000$. Please lower your price");
     return next(error);
   }
 
