@@ -4,6 +4,25 @@ const mongoose = require("mongoose");
 const User = mongoose.model("user");
 const passport = require("passport");
 
+router.route("/register").post(async (req, res, next) => {
+  if ((req.body.username, req.body.password)) {
+    const user = new User({
+      username: req.body.username,
+      password: req.body.password,
+      accessLevel: 1,
+      birthdate: req.body.birthdate,
+    });
+    try {
+      const newUser = await user.save();
+      res.status(201).json(newUser);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  } else {
+    return res.status(400).json("Username or password were not provided!");
+  }
+});
+
 router.route("/login").post((req, res, next) => {
   if ((req.body.username, req.body.password)) {
     passport.authenticate("local", function (error, user) {
@@ -18,7 +37,7 @@ router.route("/login").post((req, res, next) => {
       });
     })(req, res);
   } else {
-    return res.status(400).json("Username and password were not provided!");
+    return res.status(400).json("Username or password were not provided!");
   }
 });
 
@@ -78,7 +97,7 @@ router.get("/:id", getUser, (req, res) => {
   res.json(res.user);
 });
 
-router.post("/", async (req, res) => {
+router.post("/create", async (req, res) => {
   const user = new User({
     username: req.body.username,
     password: req.body.password,
@@ -94,7 +113,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id", getUser, async (req, res) => {
+router.patch("/update/:id", getUser, async (req, res) => {
   if (req.body.username != null) {
     res.user.username = req.body.username;
   }

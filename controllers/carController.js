@@ -4,22 +4,22 @@ const mongoose = require("mongoose");
 const Car = mongoose.model("car");
 
 router.get("/", async (req, res) => {
-    try {
-      const cars = await Car.find();
-      const carsWithId = cars.map(car => {
-        return {
-          id: car._id.toString(),
-          brand: car.brand,
-          series: car.series,
-          bodyStyle: car.bodyStyle,
-          dateOfManufacturing: car.dateOfManufacturing
-        };
-      });
-      res.status(200).json(carsWithId);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  });
+  try {
+    const cars = await Car.find();
+    const carsWithId = cars.map((car) => {
+      return {
+        id: car._id.toString(),
+        brand: car.brand,
+        series: car.series,
+        bodyStyle: car.bodyStyle,
+        dateOfManufacturing: car.dateOfManufacturing,
+      };
+    });
+    res.status(200).json(carsWithId);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 router.get("/:id", async (req, res) => {
   try {
@@ -44,7 +44,7 @@ router.get("/:brand", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/create", async (req, res) => {
   const car = new Car({
     brand: req.body.brand,
     series: req.body.series,
@@ -54,6 +54,31 @@ router.post("/", async (req, res) => {
 
   try {
     const newCar = await car.save();
+    res.status(201).json(newCar);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+router.patch("/update/:id", async (req, res) => {
+  const carFromDB = Car.findById(req.params.id)
+  if(carFromDB){
+    if(req.body.brand != null) {
+      carFromDB.brand = req.body.brand;
+    }
+    if(req.body.series != null) {
+      carFromDB.series = req.body.series;
+    }
+    if(req.body.bodyStyle != null) {
+      carFromDB.bodyStyle = req.body.bodyStyle;
+    }
+    if(req.body.dateOfManufacturing != null) {
+      carFromDB.dateOfManufacturing = req.body.dateOfManufacturing;
+    }
+  }
+
+  try {
+    const updatedCar = await carFromDB.save();
     res.status(201).json(newCar);
   } catch (error) {
     res.status(400).json({ message: error.message });
