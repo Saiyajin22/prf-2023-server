@@ -1,5 +1,5 @@
 {
-  "name": "1_bevezetes_nodejs",
+  "name": "prf-projekt-2023",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -10,9 +10,9 @@
     "nodejs",
     "prf",
     "gyakorlat",
-    "oktatas"
+    "projekt"
   ],
-  "author": "Szabó Zoltán",
+  "author": "Tóth Zoltán",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
