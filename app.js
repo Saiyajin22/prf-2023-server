@@ -28,6 +28,7 @@ db.once("open", function () {
 
 const User = require("./db/userSchema");
 const Car = require("./db/carSchema");
+const Bicycle = require("./db/bicycleSchema");
 require("./db/bootstrapper")();
 
 app.use(bodyParser.json());
@@ -72,7 +73,7 @@ app.use((req, res, next) => {
 
 app.use("/users", require("./controllers/userController"));
 app.use("/cars", require("./controllers/carController"));
-app.use("", express.static("../client"));
+app.use("", express.static("../prf-2023-frontend"));
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
 });

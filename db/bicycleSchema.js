@@ -41,10 +41,10 @@ bicycleSchema.pre('save', function(next) {
   return next();
 });
 
-bicycleSchema.pre('find', function(next) {
-    const bicycle = this;
-    bicycle.where({price: { $lt: 500000 }})
-});
+// bicycleSchema.pre('find', function(next) {
+//     const bicycle = this;
+//     bicycle.where({price: { $lt: 500000 }})
+// });
 
 const Bicycle = mongoose.model('bicycle', bicycleSchema);
 module.exports = Bicycle;

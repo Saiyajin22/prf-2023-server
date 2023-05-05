@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Bicycle = require("./bicycleSchema");
+const Bicycle = mongoose.model("bicycle");
 const User = mongoose.model("user");
 const Car = mongoose.model("car");
 
@@ -60,6 +60,7 @@ async function ensureCarsExist() {
 async function ensureBicyclesExist() {
   try {
     const bicycles = await Bicycle.find();
+
     if (bicycles && bicycles.length > 0) {
       console.log("Bicycles already exist!");
     } else {
