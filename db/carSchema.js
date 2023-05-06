@@ -1,5 +1,27 @@
 const mongoose = require('mongoose');
-const { carBodyStyles } = require('../models/carBodyStyles');
+
+const carBodyStyles = [
+  "sedan",
+  "micro",
+  "hatchback",
+  "univsersal",
+  "liftback",
+  "coupe",
+  "cabriolet",
+  "roadster",
+  "targa",
+  "limousine",
+  "muscle car",
+  "sport car",
+  "super car",
+  "suv",
+  "crossover",
+  "pickup",
+  "van",
+  "minivan",
+  "minibus",
+  "campervan"
+];
 
 const carSchema = new mongoose.Schema({
   brand: {

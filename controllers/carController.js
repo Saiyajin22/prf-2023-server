@@ -4,9 +4,9 @@ const mongoose = require("mongoose");
 const Car = mongoose.model("car");
 const ObjectId = mongoose.Types.ObjectId;
 
-function getCarById(id){
+function getCarById(id) {
   const carFromDB = Car.findById(id);
-  if(carFromDB){
+  if (carFromDB) {
     return carFromDB;
   }
 
@@ -65,25 +65,33 @@ router.post("/create", async (req, res) => {
 
   try {
     const newCar = await car.save();
-    res.status(201).json(newCar);
+    return res.status(201).json({
+      message: "Car created successfully.",
+      httpStatus: "Created success",
+      httpStatusNumber: 201,
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    return res.status(400).json({
+      message: error.message,
+      httpStatus: "Bad request",
+      httpStatusNumber: 400,
+    });
   }
 });
 
 router.patch("/update/:id", async (req, res) => {
-  const carFromDB = Car.findById(req.params.id)
-  if(carFromDB){
-    if(req.body.brand != null) {
+  const carFromDB = Car.findById(req.params.id);
+  if (carFromDB) {
+    if (req.body.brand != null) {
       carFromDB.brand = req.body.brand;
     }
-    if(req.body.series != null) {
+    if (req.body.series != null) {
       carFromDB.series = req.body.series;
     }
-    if(req.body.bodyStyle != null) {
+    if (req.body.bodyStyle != null) {
       carFromDB.bodyStyle = req.body.bodyStyle;
     }
-    if(req.body.dateOfManufacturing != null) {
+    if (req.body.dateOfManufacturing != null) {
       carFromDB.dateOfManufacturing = req.body.dateOfManufacturing;
     }
   }
@@ -100,18 +108,18 @@ router.delete("/:id", async (req, res) => {
   try {
     const carId = ObjectId(req.params.id);
     await Car.deleteOne({
-      _id: carId
+      _id: carId,
     });
     return res.json({
       message: "Car deleted successfully.",
       httpStatus: "OK",
-      httpStatusNumber: 200
+      httpStatusNumber: 200,
     });
   } catch (error) {
     return res.status(500).json({
       message: "Could not delete car.",
       httpStatus: "ERROR",
-      httpStatusNumber: 500
+      httpStatusNumber: 500,
     });
   }
 });
