@@ -2,6 +2,16 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Car = mongoose.model("car");
+const ObjectId = mongoose.Types.ObjectId;
+
+function getCarById(id){
+  const carFromDB = Car.findById(id);
+  if(carFromDB){
+    return carFromDB;
+  }
+
+  return null;
+}
 
 router.get("/", async (req, res) => {
   try {
@@ -23,8 +33,9 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const car = await Car.findById(req.params.id);
-    if (car == null) {
+    const carId = ObjectId(req.params.id);
+    const car = await Car.findById(carId);
+    if (!car) {
       res.status(404).json({ message: "No car exists with the given id" });
     } else {
       res.status(200).json(car);
@@ -82,6 +93,26 @@ router.patch("/update/:id", async (req, res) => {
     res.status(201).json(newCar);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const carId = ObjectId(req.params.id);
+    await Car.deleteOne({
+      _id: carId
+    });
+    return res.json({
+      message: "Car deleted successfully.",
+      httpStatus: "OK",
+      httpStatusNumber: 200
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Could not delete car.",
+      httpStatus: "ERROR",
+      httpStatusNumber: 500
+    });
   }
 });
 
