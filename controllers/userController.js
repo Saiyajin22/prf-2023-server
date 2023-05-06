@@ -52,14 +52,14 @@ router.route("/logout").post((req, res, next) => {
       return res.status(200).json({
         message: "Successfully logged out",
         httpStatus: "OK",
-        httpStatusNumber: 200
+        httpStatusNumber: 200,
       });
     });
   } else {
     return res.status(403).json({
       message: "Logout failed. User is not logged in.",
       httpStatus: "FORBIDDEN",
-      httpStatusNumber: 403
+      httpStatusNumber: 403,
     });
   }
 });
@@ -67,9 +67,18 @@ router.route("/logout").post((req, res, next) => {
 router.route("/status").get((req, res, next) => {
   if (req.isAuthenticated()) {
     console.log(req.user);
-    return res.status(200).send(req.user);
+    return res.status(200).send({
+      message: "User is logged in",
+      httpStatus: "OK",
+      httpStatusNumber: 200,
+      data: req.user,
+    });
   } else {
-    return res.status(403).send("User is not logged in!");
+    return res.status(403).send({
+      message: "User is not logged in",
+      httpStatus: "FORBIDDEN",
+      httpStatusNumber: 403,
+    });
   }
 });
 
