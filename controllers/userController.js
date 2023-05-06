@@ -44,10 +44,23 @@ router.route("/login").post((req, res, next) => {
 
 router.route("/logout").post((req, res, next) => {
   if (req.isAuthenticated()) {
-    req.logout();
-    return res.status(200).send("Successfully logged out!");
+    req.logout((error) => {
+      if (error) {
+        return next(error);
+      }
+      console.log("Successfully logged out");
+      return res.status(200).json({
+        message: "Successfully logged out",
+        httpStatus: "OK",
+        httpStatusNumber: 200
+      });
+    });
   } else {
-    return res.status(403).send("User is not logged in!");
+    return res.status(403).json({
+      message: "Logout failed. User is not logged in.",
+      httpStatus: "FORBIDDEN",
+      httpStatusNumber: 403
+    });
   }
 });
 
