@@ -80,27 +80,38 @@ router.post("/create", async (req, res) => {
 });
 
 router.patch("/update/:id", async (req, res) => {
-  const carFromDB = Car.findById(req.params.id);
+  const carId = ObjectId(req.params.id);
+  const carFromDB = await Car.findById(carId);
+  console.log("update");
   if (carFromDB) {
-    if (req.body.brand != null) {
+    if (req.body.brand) {
       carFromDB.brand = req.body.brand;
     }
-    if (req.body.series != null) {
+    if (req.body.series) {
       carFromDB.series = req.body.series;
     }
-    if (req.body.bodyStyle != null) {
+    if (req.body.bodyStyle) {
       carFromDB.bodyStyle = req.body.bodyStyle;
     }
-    if (req.body.dateOfManufacturing != null) {
+    if (req.body.dateOfManufacturing) {
       carFromDB.dateOfManufacturing = req.body.dateOfManufacturing;
     }
   }
+  console.log("update car", carFromDB);
 
   try {
-    const updatedCar = await carFromDB.save();
-    res.status(201).json(newCar);
+    await carFromDB.save();
+    res.status(201).json({
+      message: "Car updated successfully.",
+      httpStatus: "OK",
+      httpStatusNumber: 201,
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({
+      message: "Car update failed.",
+      httpStatus: "Bad request",
+      httpStatusNumber: 400,
+    });
   }
 });
 
