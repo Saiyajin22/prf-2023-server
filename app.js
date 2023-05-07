@@ -5,9 +5,15 @@ const localStrategy = require("passport-local").Strategy;
 const expressSession = require("express-session");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const cors = require('cors');
+const cors = require("cors");
 
 const app = express();
+
+const corsOptions = {
+  origin: "http://localhost:4200",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 mongoose.connect("mongodb://localhost:27017/prf_projekt_toth_zoltan", {
   useNewUrlParser: true,
@@ -22,6 +28,7 @@ db.once("open", function () {
 
 const User = require("./db/userSchema");
 const Car = require("./db/carSchema");
+const Bicycle = require("./db/bicycleSchema");
 require("./db/bootstrapper")();
 
 app.use(bodyParser.json());
@@ -64,13 +71,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors({
-  origin: 'http://localhost:4200'
-}));
-
 app.use("/users", require("./controllers/userController"));
 app.use("/cars", require("./controllers/carController"));
-app.use("", express.static("../client"));
+app.use("", express.static("../prf-2023-frontend"));
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
 });
