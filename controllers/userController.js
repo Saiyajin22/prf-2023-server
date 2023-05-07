@@ -110,9 +110,19 @@ async function getUser(req, res, next) {
 router.get("/", async (req, res) => {
   try {
     const users = await User.find();
-    return res.status(200).json(users);
+    return res.status(200).json({
+      message: "Succesful User Query",
+      httpStatus: "OK",
+      httpStatusNumber: 200,
+      dataArray: users,
+    });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      message: "Unexpected Error while query users",
+      httpStatus: "ERROR",
+      httpStatusNumber: 500,
+      dataArray: [],
+    });
   }
 });
 
